@@ -40,3 +40,12 @@ workflows:
             # Set a dependency on print_hello (i.e. waits for print_hello)
             requires:
                 - print_hello
+
+  # The above can also be condensed like so:
+  # welcome:
+  #     jobs:
+  #         - welcome/run
+  #         - print_hello
+  #         - print_world:
+  #             requires:
+  #                 - print_hello
