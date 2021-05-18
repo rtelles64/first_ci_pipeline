@@ -4,10 +4,39 @@ version: 2.1
 orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
+# Hello World jobs
+# This uses the "workflows functionality" section example structure for jobs
+#   https://circleci.com/docs/2.0/getting-started/
+jobs:
+    print_hello:
+        # Uses the docker executor
+        docker:
+            # Specifically a docker image with Node.JS 13.8.0
+            - image: circleci/node:13.8.0
+        steps:
+            # Pulls code from Github
+            - checkout
+            # Prints "Hello" to stdout
+            - run: echo "Hello"
+    print_world:
+        docker:
+            - image: circleci/node:13.8.0
+        steps:
+            - checkout
+            - run: echo "World"
 # Orchestrate or schedule a set of jobs
 workflows:
   # Name the workflow "welcome"
   welcome:
     # Run the welcome/run job in its own container
     jobs:
-      - welcome/run
+      - welcome/run  # This is the default beginning tutorial
+
+  hello_world:  # this is the name of the workflow
+    # list the jobs we want to run
+    jobs:
+        - print_hello
+        - print_world:
+            # Set a dependency on print_hello (i.e. waits for print_hello)
+            requires:
+                - print_hello
