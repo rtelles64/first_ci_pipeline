@@ -24,6 +24,13 @@ jobs:
         steps:
             - checkout
             - run: echo "World"
+
+    print_myname:
+        docker:
+            - image: circleci/node:13.8.0
+        steps:
+            - checkout
+            - run: echo $MY_NAME
 # Orchestrate or schedule a set of jobs
 workflows:
   # Name the workflow "welcome"
@@ -40,6 +47,7 @@ workflows:
             # Set a dependency on print_hello (i.e. waits for print_hello)
             requires:
                 - print_hello
+        - print_myname
 
   # The above can also be condensed like so:
   # welcome:
