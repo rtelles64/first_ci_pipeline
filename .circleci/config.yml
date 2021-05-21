@@ -55,7 +55,8 @@ jobs:
             - attach_workspace:
                 at: tmp_workspace
             # Output contents of output.txt
-            - run: cat output.txt
+            # Must be abs path per CircleCI docs
+            - run: cat tmp_workspace/output.txt
 # Orchestrate or schedule a set of jobs
 workflows:
   # Name the workflow "welcome"
