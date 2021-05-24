@@ -91,7 +91,8 @@ jobs:
         <<: *defaults
         steps:
             - run: return 1
-            - run: echo "Hello Error!"
+            - run:
+                command: echo "Hello Error!"
                 when: on_fail
 # Orchestrate or schedule a set of jobs
 workflows:
