@@ -1,5 +1,15 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
+# Added to implement using Commands
+commands:
+    print_pipeline_id:
+        description: "Prints the Workflow ID"
+        # Enable the ability to pass in the Workflow ID by using parameters
+        parameters:
+            id:
+                type: string
+        steps:
+            - run: echo << parameters.id >>
 # Use a package of configuration called an orb.
 orbs:
   # Declare a dependency on the welcome-orb
@@ -57,37 +67,47 @@ jobs:
             # Output contents of output.txt
             # Must be abs path per CircleCI docs
             - run: cat tmp_workspace/output.txt
+
+    print_id:
+        docker:
+            - image: circleci/node:13.8.0
+        steps:
+            - print_pipeline_id:
+                # Pass in the workflow id (this pulls the pipeline.id from the
+                # workspace)
+                id: << pipeline.id >>
 # Orchestrate or schedule a set of jobs
 workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
-    jobs:
-      - welcome/run  # This is the default beginning tutorial
+#   # Name the workflow "welcome"
+#   welcome:
+#     # Run the welcome/run job in its own container
+#     jobs:
+#       - welcome/run  # This is the default beginning tutorial
+#
+#   hello_world:  # this is the name of the workflow
+#     # list the jobs we want to run
+#     jobs:
+#         - print_hello
+#         - print_world:
+#             # Set a dependency on print_hello (i.e. waits for print_hello)
+#             requires:
+#                 - print_hello
+#         - print_myname
+#
+#   print_file:
+#     jobs:
+#         - save_hello_world_output
+#         - print_output_file:
+#             requires:
+#                 - save_hello_world_output
 
-  hello_world:  # this is the name of the workflow
-    # list the jobs we want to run
-    jobs:
-        - print_hello
-        - print_world:
-            # Set a dependency on print_hello (i.e. waits for print_hello)
-            requires:
-                - print_hello
-        - print_myname
-
-  print_file:
-    jobs:
-        - save_hello_world_output
-        - print_output_file:
-            requires:
-                - save_hello_world_output
-
-  # The above can also be condensed like so:
-  # welcome:
-  #     jobs:
-  #         - welcome/run
-  #         - print_hello
-  #         - print_world:
-  #             requires:
-  #                 - print_hello
-  #         - print_myname
+    # The above can also be condensed like so:
+    welcome:
+      jobs:
+          # - welcome/run
+          # - print_hello
+          # - print_world:
+          #     requires:
+          #         - print_hello
+          # - print_myname
+          - print_id
