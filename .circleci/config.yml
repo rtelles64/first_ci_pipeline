@@ -94,6 +94,28 @@ jobs:
             - run:
                 command: echo "Hello Error!"
                 when: on_fail
+
+    # This is for implementing a functioning ci pipeline. Necessary steps are:
+    #   - build
+    #   - test
+    #   - analyze
+    build:
+        <<: *defaults
+        steps:
+            - checkout
+            - run: npm run lint
+
+    test:
+        <<: *defaults
+        steps:
+            - checkout
+            - run: npm run test
+
+    analyze:
+        <<: *defaults
+        steps:
+            - checkout
+            - run: npm audit
 # Orchestrate or schedule a set of jobs
 workflows:
 #   # Name the workflow "welcome"
@@ -120,8 +142,8 @@ workflows:
 #                 - save_hello_world_output
 
     # The above can also be condensed like so:
-    welcome:
-      jobs:
+    # welcome:
+    #   jobs:
           # - welcome/run
           # - print_hello
           # - print_world:
@@ -129,4 +151,13 @@ workflows:
           #         - print_hello
           # - print_myname
           # - print_id
-          - fail_on_purpose
+          # - fail_on_purpose
+
+    ci_pipeline:
+        - build
+        - test:
+            requires:
+                - build
+        - analyze:
+            requires:
+                - test
