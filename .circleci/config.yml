@@ -154,11 +154,12 @@ workflows:
           # - fail_on_purpose
 
     ci_pipeline:
-        - build
-        - test:
-            requires:
-                - build
-        - analyze:
-            requires:
-                - build
-                - test
+        # Don't forget this!
+        jobs:
+            - build
+            - test:
+                requires:
+                    - build
+            - analyze:
+                requires:
+                    - test
