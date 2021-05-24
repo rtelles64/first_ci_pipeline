@@ -85,6 +85,14 @@ jobs:
                 # Pass in the workflow id (this pulls the pipeline.id from the
                 # workspace)
                 id: << pipeline.id >>
+
+    # Let's test failure handling
+    fail_on_purpose:
+        <<: *defaults
+        steps:
+            - run: return 1
+            - run: echo "Hello Error!"
+                when: on_fail
 # Orchestrate or schedule a set of jobs
 workflows:
 #   # Name the workflow "welcome"
@@ -119,4 +127,5 @@ workflows:
           #     requires:
           #         - print_hello
           # - print_myname
-          - print_id
+          # - print_id
+          - fail_on_purpose
